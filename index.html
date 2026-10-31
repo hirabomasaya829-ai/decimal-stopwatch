@@ -4,15 +4,41 @@
 <meta name="google-site-verification" content="5UUhQq7dEM7AN2DO1BQUM1RI3_KKcZVU2h5L40esHvM">
 <meta name="description" content="無料のデシマルストップウォッチ。経過時間を10進数の分と通常の分秒で同時表示。ラップ・停止・再開時刻を記録し、履歴をコピーできます。">
 <meta name="robots" content="index,follow"><link rel="canonical" href="https://decimal-stopwatch.jp-tools.workers.dev/">
-<meta name="theme-color" content="#101827"><title>デシマルストップウォッチ｜無料・ラップ記録・時刻表示対応</title>
+<meta name="theme-color" content="#f6f8fb"><title>デシマルストップウォッチ｜無料・ラップ記録・時刻表示対応</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#101827;color:#f4f7fb;font-family:system-ui,sans-serif}main{max-width:680px;margin:auto;padding:22px}header,.panel{text-align:center}.panel{background:#182336;border:1px solid #344154;border-radius:20px;padding:25px 12px;margin:22px 0}.display{font-size:clamp(4rem,16vw,7rem);font-weight:700;font-variant-numeric:tabular-nums}.muted{color:#b8c3d1}.clock{font-size:.85rem;margin-top:10px;color:#a8b4c6}.actions{display:flex;gap:8px}.actions button{flex:1}button{border:0;border-radius:12px;padding:16px 6px;font-weight:bold;cursor:pointer}#toggle{background:#42d69c}#lap{background:#4778b8;color:white}#reset{background:#2d3b50;color:white}button:disabled{opacity:.45}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;white-space:nowrap}td,th{padding:9px;border-bottom:1px solid #344154;text-align:left}section{margin-top:24px}.info{line-height:1.8;color:#b8c3d1}h1{font-size:1.6rem}h2{font-size:1.15rem}#copy{background:#405d82;color:white;margin:12px 0}textarea{width:100%;background:#182336;color:white;padding:12px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:#182336;border:1px solid #344154;border-radius:12px;padding:12px 5px;text-align:center}.stat strong{display:block;font-variant-numeric:tabular-nums;font-size:1.2rem}.stat small{color:#b8c3d1}.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tools button{padding:12px}#csv{background:#2d3b50;color:white}kbd{background:#28364a;border-radius:4px;padding:1px 5px}@media(max-width:420px){.stat strong{font-size:1rem}}
+
+/* 明るい画面・コンパクトなラップ統計 */
+body{background:#f6f8fb;color:#172337;color-scheme:light}
+.panel{background:#fff;border:1px solid #dce3ec;box-shadow:0 4px 18px rgba(26,45,73,.06)}
+.muted,.clock{color:#596779}
+.actions{gap:10px}
+.actions button{min-height:66px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:1rem}
+.actions button small{font-size:.68rem;font-weight:500;opacity:.78;letter-spacing:.02em}
+#toggle{background:#16865f;color:#fff}
+#lap{background:#2766bd;color:#fff}
+#reset{background:#e7edf5;color:#26354b}
+button:disabled{opacity:.45;cursor:not-allowed}
+.stats-section{margin-top:14px}
+.stats{margin-top:0;gap:6px}
+.stat{background:#fff;border:1px solid #dce3ec;border-radius:9px;padding:7px 4px}
+.stat strong{font-size:1.06rem;line-height:1.2}
+.stat small{color:#596779;font-size:.72rem}
+#lapCount{margin:4px 0 0;font-size:.74rem;text-align:right}
+.stats-section+section{margin-top:12px}
+.stats-section+section h2{margin:0 0 10px}
+td,th{border-bottom:1px solid #e2e8f0}
+th{background:#edf2f8;color:#34445a}
+#copy,#csv{background:#e5edf8;color:#204774;margin:6px 0}
+textarea{background:#fff;color:#172337;border:1px solid #cbd5e1}
+kbd{background:#e5edf8}
+@media(max-width:420px){main{padding:14px}.panel{padding:18px 10px;margin:14px 0}.stats-section{margin-top:12px}.stat strong{font-size:.98rem}}
 </style></head><body><main>
 <header><h1>デシマルストップウォッチ</h1></header>
 <section class="panel"><div class="muted">DECIMAL MINUTES</div><div id="display" class="display" role="timer">0.00</div><div class="muted">通常時間 <span id="normal">00:00.0</span></div><div class="clock">現在時刻 <span id="clock">--:--:--</span></div></section>
-<div class="actions"><button id="toggle">スタート</button><button id="lap" disabled>ラップ</button><button id="reset">リセット</button></div>
-<section><h2>ラップ統計</h2><div class="stats"><div class="stat"><small>平均</small><strong id="avg">--</strong></div><div class="stat"><small>最短</small><strong id="min">--</strong></div><div class="stat"><small>最長</small><strong id="max">--</strong></div></div><p class="muted" id="lapCount">ラップ 0件</p></section><section><h2>ラップ・停止・再開の記録</h2><p id="empty" class="muted">まだ記録はありません。</p><div class="tablewrap"><table><thead><tr><th>記録</th><th>デシマル（分）</th><th>分：秒</th><th>記録時刻</th></tr></thead><tbody id="rows"></tbody></table></div><div class="tools"><button id="copy">記録をコピー</button><button id="csv">CSVダウンロード</button></div><p id="copyStatus" role="status"></p><p class="muted">キーボード：<kbd>Space</kbd> 開始・停止、<kbd>L</kbd> ラップ（入力欄では無効）</p><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
+<div class="actions"><button id="toggle"><span class="btn-label">スタート</span><small>Space</small></button><button id="lap" disabled><span class="btn-label">ラップ</span><small>L</small></button><button id="reset">リセット</button></div>
+<section class="stats-section"><div class="stats"><div class="stat"><small>平均</small><strong id="avg">--</strong></div><div class="stat"><small>最短</small><strong id="min">--</strong></div><div class="stat"><small>最長</small><strong id="max">--</strong></div></div><p class="muted" id="lapCount">ラップ 0件</p></section><section><h2>ラップ・停止・再開の記録</h2><p id="empty" class="muted">まだ記録はありません。</p><div class="tablewrap"><table><thead><tr><th>記録</th><th>デシマル（分）</th><th>分：秒</th><th>記録時刻</th></tr></thead><tbody id="rows"></tbody></table></div><div class="tools"><button id="copy">記録をコピー</button><button id="csv">CSVダウンロード</button></div><p id="copyStatus" role="status"></p><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
 
 </main><script>
 (()=>{'use strict';
@@ -26,13 +52,13 @@ const ms=()=>Math.max(0,elapsed+(running?mono()-started:0));
 const decimal=v=>(Math.floor(v/600)/100).toFixed(2);
 const normal=v=>String(Math.floor(v/60000)).padStart(2,'0')+':'+String(Math.floor(v/1000)%60).padStart(2,'0')+'.'+Math.floor(v%1000/100);
 function save(){try{localStorage.setItem(KEY,JSON.stringify({elapsed:ms(),savedAt:Date.now(),running,lapNo,events,lastLap}))}catch(e){console.warn(e)}}
-function restore(){try{const raw=localStorage.getItem(KEY);if(!raw)return;const s=JSON.parse(raw);if(!s||!Array.isArray(s.events))return;elapsed=Math.max(0,Number(s.elapsed)||0);lapNo=Math.max(0,Number(s.lapNo)||0);events=s.events.filter(e=>e&&typeof e.kind==='string'&&Number.isFinite(e.value)).slice(0,5000);lastLap=Math.max(0,Number(s.lastLap)||0);if(s.running){elapsed+=Math.max(0,Date.now()-(Number(s.savedAt)||Date.now()));started=mono();startedWall=Date.now();running=true;$('toggle').textContent='停止';$('lap').disabled=false;}else if(elapsed||events.length){$('toggle').textContent='再開';}}catch(e){console.warn(e)}}
+function restore(){try{const raw=localStorage.getItem(KEY);if(!raw)return;const s=JSON.parse(raw);if(!s||!Array.isArray(s.events))return;elapsed=Math.max(0,Number(s.elapsed)||0);lapNo=Math.max(0,Number(s.lapNo)||0);events=s.events.filter(e=>e&&typeof e.kind==='string'&&Number.isFinite(e.value)).slice(0,5000);lastLap=Math.max(0,Number(s.lastLap)||0);if(s.running){elapsed+=Math.max(0,Date.now()-(Number(s.savedAt)||Date.now()));started=mono();startedWall=Date.now();running=true;$('toggle').querySelector('.btn-label').textContent='停止';$('lap').disabled=false;}else if(elapsed||events.length){$('toggle').querySelector('.btn-label').textContent='再開';}}catch(e){console.warn(e)}}
 function draw(){const v=ms();$('display').textContent=decimal(v);$('normal').textContent=normal(v);if(running)frame=requestAnimationFrame(draw)}
 function add(kind){const v=ms(),at=clock();if(kind==='ラップ')lapNo++;const e={kind:kind==='ラップ'?'ラップ '+lapNo:kind,value:v,at};if(kind==='ラップ'){e.split=Math.max(0,v-lastLap);lastLap=v}events.unshift(e);render();save()}
 function render(){const body=$('rows');body.replaceChildren();for(const e of events){const tr=document.createElement('tr');for(const val of [e.kind,decimal(e.value),normal(e.value),e.at]){const td=document.createElement('td');td.textContent=val;tr.append(td)}body.append(tr)}$('empty').hidden=events.length>0;const splits=events.filter(e=>e.kind.startsWith('ラップ ')&&Number.isFinite(e.split)).map(e=>e.split);$('lapCount').textContent='ラップ '+splits.length+'件';$('avg').textContent=splits.length?decimal(splits.reduce((a,b)=>a+b,0)/splits.length):'--';$('min').textContent=splits.length?decimal(Math.min(...splits)):'--';$('max').textContent=splits.length?decimal(Math.max(...splits)):'--'}
-function toggle(){if(running){elapsed=ms();running=false;cancelAnimationFrame(frame);add('停止');$('toggle').textContent='再開';$('lap').disabled=true;draw()}else{started=mono();startedWall=Date.now();running=true;add(elapsed===0&&events.length===0?'開始':'再開');$('toggle').textContent='停止';$('lap').disabled=false;draw()}save()}
+function toggle(){if(running){elapsed=ms();running=false;cancelAnimationFrame(frame);add('停止');$('toggle').querySelector('.btn-label').textContent='再開';$('lap').disabled=true;draw()}else{started=mono();startedWall=Date.now();running=true;add(elapsed===0&&events.length===0?'開始':'再開');$('toggle').querySelector('.btn-label').textContent='停止';$('lap').disabled=false;draw()}save()}
 function lap(){if(running)add('ラップ')}
-function reset(){if(!confirm('計測時間と保存されたラップ記録をすべて消去しますか？'))return;running=false;cancelAnimationFrame(frame);elapsed=0;lapNo=0;lastLap=0;events=[];render();$('toggle').textContent='スタート';$('lap').disabled=true;$('manual').hidden=true;$('copyStatus').textContent='';save();draw()}
+function reset(){if(!confirm('計測時間と保存されたラップ記録をすべて消去しますか？'))return;running=false;cancelAnimationFrame(frame);elapsed=0;lapNo=0;lastLap=0;events=[];render();$('toggle').querySelector('.btn-label').textContent='スタート';$('lap').disabled=true;$('manual').hidden=true;$('copyStatus').textContent='';save();draw()}
 function rows(){return [['記録','デシマル（分）','分：秒','記録時刻','ラップ間（分）'],...events.map(e=>[e.kind,decimal(e.value),normal(e.value),e.at,Number.isFinite(e.split)?decimal(e.split):''])]}
 function csvCell(v){const s=String(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
 $('toggle').onclick=toggle;$('lap').onclick=lap;$('reset').onclick=reset;
