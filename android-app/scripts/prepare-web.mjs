@@ -12,12 +12,11 @@ html = html.replace(/<div id="offlineDownloadArea"[\s\S]*?<\/div>/, '');
 html = html.replace(/<span id="offlineBadge" hidden>/, '<span id="offlineBadge">');
 html = html.replace(/<p id="offlineDescription" class="offline-note" hidden>/, '<p id="offlineDescription" class="offline-note">');
 html = html.replace('デシマルストップウォッチ｜無料・ラップ記録・時刻表示対応', 'デシマルストップウォッチ');
-// The Android build has no download button; guard the optional handler.
-html = html.replace(/\$\('downloadOffline'\)\.onclick/g, "$('downloadOffline')?.onclick");
-// Avoid invalid optional-chain assignment; remove the entire download handler instead.
-html = html.replace(/if\(\$\('downloadOffline'\)\)\$\('downloadOffline'\)\?\.onclick=\(\)=>\{[\s\S]*?setTimeout\(\(\)=>URL\.revokeObjectURL\(url\),3000\)\};/, '');
-// If the handler format changes, retain it behind a null check rather than breaking startup.
-html = html.replace(/\$\('downloadOffline'\)\?\.onclick=/g, "$('downloadOffline') && ($('downloadOffline').onclick =");
+// Remove the website-only download handler. No button exists in the Android app.
+const handlerStart = html.indexOf("if($('downloadOffline'))$('downloadOffline').onclick=()=>{");
+const handlerEnd = html.indexOf("$('swapTime').onclick=swapTime;", handlerStart);
+if (handlerStart < 0 || handlerEnd < 0) throw new Error('Offline download handler changed; update Android build script');
+html = html.slice(0, handlerStart) + html.slice(handlerEnd);
 mkdirSync(resolve(process.cwd(), 'www'), { recursive: true });
 writeFileSync(resolve(process.cwd(), 'www/index.html'), html);
 console.log('Prepared self-contained offline Android web assets');
