@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="google-site-verification" content="5UUhQq7dEM7AN2DO1BQUM1RI3_KKcZVU2h5L40esHvM">
+<meta name="description" content="無料のデシマルストップウォッチ。経過時間を10進数の分と通常の分秒で同時表示。ラップ・停止・再開時刻を記録し、履歴をコピーできます。">
+<meta name="robots" content="index,follow"><link rel="canonical" href="https://decimal-stopwatch.jp-tools.workers.dev/">
+<title>デシマルストップウォッチ｜無料・ラップ記録・時刻表示対応</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101827;color:#f4f7fb;font-family:system-ui,sans-serif}main{max-width:680px;margin:auto;padding:22px}header,.panel{text-align:center}.panel{background:#182336;border:1px solid #344154;border-radius:20px;padding:25px 12px;margin:22px 0}.display{font-size:clamp(4rem,16vw,7rem);font-weight:700;font-variant-numeric:tabular-nums}.muted{color:#b8c3d1}.clock{font-size:.85rem;margin-top:10px;color:#a8b4c6}.actions{display:flex;gap:8px}.actions button{flex:1}button{border:0;border-radius:12px;padding:16px 6px;font-weight:bold;cursor:pointer}#toggle{background:#42d69c}#lap{background:#4778b8;color:white}#reset{background:#2d3b50;color:white}button:disabled{opacity:.45}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;white-space:nowrap}td,th{padding:9px;border-bottom:1px solid #344154;text-align:left}section{margin-top:24px}.info{line-height:1.8;color:#b8c3d1}h1{font-size:1.6rem}h2{font-size:1.15rem}#copy{background:#405d82;color:white;margin:12px 0}textarea{width:100%;background:#182336;color:white;padding:12px}
+</style></head><body><main>
+<header><h1>デシマルストップウォッチ</h1><p class="muted">無料・100進法・ラップ記録対応</p></header>
+<section class="panel"><div class="muted">DECIMAL MINUTES</div><div id="display" class="display" role="timer">0.00</div><div class="muted">通常時間 <span id="normal">00:00.0</span></div><div class="clock">現在時刻 <span id="clock">--:--:--</span></div></section>
+<div class="actions"><button id="toggle">スタート</button><button id="lap" disabled>ラップ</button><button id="reset">リセット</button></div>
+<section><h2>ラップ・停止・再開の記録</h2><p id="empty" class="muted">まだ記録はありません。</p><div class="tablewrap"><table><thead><tr><th>記録</th><th>デシマル（分）</th><th>分：秒</th><th>記録時刻</th></tr></thead><tbody id="rows"></tbody></table></div><button id="copy">記録をコピー</button> <span id="copyStatus" role="status"></span><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
+<section class="info"><h2>デシマルストップウォッチとは？</h2><p>デシマルストップウォッチは、経過時間を10進数の「分」で表す計測ツールです。30秒は0.50分、1分30秒は1.50分と表示します。作業時間の測定や工程分析などに便利です。</p><h2>使い方</h2><p>「スタート」で計測を開始し、「ラップ」で計測を止めずに記録できます。「停止」と「再開」の時刻も自動記録するため、中断時間を確認できます。記録はタブ区切りでコピーでき、表計算ソフトに貼り付けられます。リセットすると記録は消去されます。</p><p>無料・登録不要。スマートフォンとパソコンで利用できます。</p></section>
+</main><script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+let elapsed=0,started=0,running=false,frame=0,lapNo=0,events=[];
+const mono=()=>performance.now(),clock=()=>new Date().toLocaleTimeString('ja-JP',{hour12:false});
+const ms=()=>elapsed+(running?mono()-started:0);
+const decimal=v=>(Math.floor(v/600)/100).toFixed(2);
+const normal=v=>`${String(Math.floor(v/60000)).padStart(2,'0')}:${String(Math.floor(v/1000)%60).padStart(2,'0')}.${Math.floor(v%1000/100)}`;
+function draw(){let v=ms();$('display').textContent=decimal(v);$('normal').textContent=normal(v);if(running)frame=requestAnimationFrame(draw)}
+function add(kind){let v=ms(),at=clock();if(kind==='ラップ')lapNo++;events.unshift({kind:kind==='ラップ'?`ラップ ${lapNo}`:kind,dec:decimal(v),normal:normal(v),at});render()}
+function render(){const body=$('rows');body.replaceChildren();for(const e of events){let tr=document.createElement('tr');for(const val of [e.kind,e.dec,e.normal,e.at]){let td=document.createElement('td');td.textContent=val;tr.append(td)}body.append(tr)}$('empty').hidden=events.length>0}
+$('toggle').onclick=()=>{if(running){elapsed=ms();running=false;cancelAnimationFrame(frame);add('停止');$('toggle').textContent='再開';$('lap').disabled=true;draw()}else{started=mono();running=true;add(elapsed===0&&events.length===0?'開始':'再開');$('toggle').textContent='停止';$('lap').disabled=false;draw()}};
+$('lap').onclick=()=>{if(running)add('ラップ')};
+$('reset').onclick=()=>{running=false;cancelAnimationFrame(frame);elapsed=0;lapNo=0;events=[];render();$('toggle').textContent='スタート';$('lap').disabled=true;$('manual').hidden=true;draw()};
+$('copy').onclick=async()=>{if(!events.length){$('copyStatus').textContent='記録がありません';return}const content=['記録\tデシマル（分）\t分：秒\t記録時刻',...events.map(e=>[e.kind,e.dec,e.normal,e.at].join('\t'))].join('\n');try{await navigator.clipboard.writeText(content);$('copyStatus').textContent='コピーしました';$('manual').hidden=true}catch(e){$('fallback').value=content;$('manual').hidden=false;$('fallback').focus();$('fallback').select();$('copyStatus').textContent='自動コピーできませんでした。下の欄を選択してコピーしてください'}};
+setInterval(()=>{$('clock').textContent=clock()},250);document.addEventListener('visibilitychange',()=>{if(!document.hidden){cancelAnimationFrame(frame);draw()}});$('clock').textContent=clock();draw();
+})();
+</script></body></html>
