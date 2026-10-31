@@ -41,9 +41,12 @@ th:last-child,td:last-child{min-width:170px}
 .normal-line{display:flex;justify-content:center;align-items:baseline;gap:.45em;white-space:nowrap}.normal-line #normal{display:inline-block;min-width:8ch;text-align:left;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;font-family:inherit}
 body,button,input,textarea,select{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif}
 #normal,.display,table,.stat strong{font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
+.normal-line,.time-line{display:flex;justify-content:center;align-items:baseline;gap:.45em;white-space:nowrap;font-size:1rem;line-height:1.5}
+.normal-line #normal,.time-line #clock{display:inline-block;min-width:8ch;text-align:left;font-family:inherit;font-size:inherit;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.time-line{margin-top:8px;color:#596779}
 </style></head><body><main>
 <header><h1>デシマルストップウォッチ</h1></header>
-<section class="panel"><div class="muted">DECIMAL MINUTES</div><div id="display" class="display" role="timer">0.00</div><div class="muted normal-line">通常時間 <span id="normal">00:00.00</span></div><div class="clock">現在時刻 <span id="clock">--:--:--</span></div></section>
+<section class="panel"><div class="muted">DECIMAL MINUTES</div><div id="display" class="display" role="timer">0.00</div><div class="muted normal-line">通常時間 <span id="normal">00:00.00</span></div><div class="clock time-line">現在時刻 <span id="clock">--:--:--</span></div></section>
 <div class="actions"><button id="toggle"><span class="btn-label">スタート</span><small>Space</small></button><button id="lap" disabled><span class="btn-label">ラップ</span><small>L</small></button><button id="reset">リセット</button></div>
 <section class="stats-section"><div class="stats"><div class="stat"><small>平均</small><strong id="avg">--</strong></div><div class="stat"><small>最短</small><strong id="min">--</strong></div><div class="stat"><small>最長</small><strong id="max">--</strong></div></div><p class="muted" id="lapCount">ラップ 0件</p></section><section><h2>ラップ・停止・再開の記録</h2><p id="empty" class="muted">まだ記録はありません。</p><div class="tablewrap"><table><thead><tr><th>記録</th><th>デシマル（分）</th><th>分：秒</th><th>記録時刻</th><th>コメント</th></tr></thead><tbody id="rows"></tbody></table></div><div class="tools"><button id="copy">記録をコピー</button><button id="csv">CSVダウンロード</button></div><p id="copyStatus" role="status"></p><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
 
