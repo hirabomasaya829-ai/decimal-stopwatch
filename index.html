@@ -36,9 +36,9 @@ kbd{background:#e5edf8}
 @media(max-width:420px){main{padding:14px}.panel{padding:18px 10px;margin:14px 0}.stats-section{margin-top:12px}.stat strong{font-size:.98rem}}
 </style></head><body><main>
 <header><h1>デシマルストップウォッチ</h1></header>
-<section class="panel"><div class="muted">DECIMAL MINUTES</div><div id="display" class="display" role="timer">0.00</div><div class="muted">通常時間 <span id="normal">00:00.0</span></div><div class="clock">現在時刻 <span id="clock">--:--:--</span></div></section>
+<section class="panel"><div class="muted">DECIMAL MINUTES</div><div id="display" class="display" role="timer">0.00</div><div class="muted">通常時間 <span id="normal">00:00.00</span></div><div class="clock">現在時刻 <span id="clock">--:--:--</span></div></section>
 <div class="actions"><button id="toggle"><span class="btn-label">スタート</span><small>Space</small></button><button id="lap" disabled><span class="btn-label">ラップ</span><small>L</small></button><button id="reset">リセット</button></div>
-<section class="stats-section"><div class="stats"><div class="stat"><small>平均</small><strong id="avg">--</strong></div><div class="stat"><small>最短</small><strong id="min">--</strong></div><div class="stat"><small>最長</small><strong id="max">--</strong></div></div><p class="muted" id="lapCount">ラップ 0件</p></section><section><h2>ラップ・停止・再開の記録</h2><p id="empty" class="muted">まだ記録はありません。</p><div class="tablewrap"><table><thead><tr><th>記録</th><th>デシマル（分）</th><th>分：秒</th><th>記録時刻</th></tr></thead><tbody id="rows"></tbody></table></div><div class="tools"><button id="copy">記録をコピー</button><button id="csv">CSVダウンロード</button></div><p id="copyStatus" role="status"></p><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
+<section class="stats-section"><div class="stats"><div class="stat"><small>平均</small><strong id="avg">--</strong></div><div class="stat"><small>最短</small><strong id="min">--</strong></div><div class="stat"><small>最長</small><strong id="max">--</strong></div></div><p class="muted" id="lapCount">ラップ 0件</p></section><section><h2>ラップ・停止・再開の記録</h2><p id="empty" class="muted">まだ記録はありません。</p><div class="tablewrap"><table><thead><tr><th>記録</th><th>デシマル（分）</th><th>分：秒.01</th><th>記録時刻</th></tr></thead><tbody id="rows"></tbody></table></div><div class="tools"><button id="copy">記録をコピー</button><button id="csv">CSVダウンロード</button></div><p id="copyStatus" role="status"></p><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
 
 </main><script>
 (()=>{'use strict';
@@ -50,7 +50,7 @@ const mono=()=>performance.now();
 const clock=()=>new Date().toLocaleTimeString('ja-JP',{hour12:false});
 const ms=()=>Math.max(0,elapsed+(running?mono()-started:0));
 const decimal=v=>(Math.floor(v/600)/100).toFixed(2);
-const normal=v=>String(Math.floor(v/60000)).padStart(2,'0')+':'+String(Math.floor(v/1000)%60).padStart(2,'0')+'.'+Math.floor(v%1000/100);
+const normal=v=>String(Math.floor(v/60000)).padStart(2,'0')+':'+String(Math.floor(v/1000)%60).padStart(2,'0')+'.'+String(Math.floor(v%1000/10)).padStart(2,'0');
 function save(){try{localStorage.setItem(KEY,JSON.stringify({elapsed:ms(),savedAt:Date.now(),running,lapNo,events,lastLap}))}catch(e){console.warn(e)}}
 function restore(){try{const raw=localStorage.getItem(KEY);if(!raw)return;const s=JSON.parse(raw);if(!s||!Array.isArray(s.events))return;elapsed=Math.max(0,Number(s.elapsed)||0);lapNo=Math.max(0,Number(s.lapNo)||0);events=s.events.filter(e=>e&&typeof e.kind==='string'&&Number.isFinite(e.value)).slice(0,5000);lastLap=Math.max(0,Number(s.lastLap)||0);if(s.running){elapsed+=Math.max(0,Date.now()-(Number(s.savedAt)||Date.now()));started=mono();startedWall=Date.now();running=true;$('toggle').querySelector('.btn-label').textContent='停止';$('lap').disabled=false;}else if(elapsed||events.length){$('toggle').querySelector('.btn-label').textContent='再開';}}catch(e){console.warn(e)}}
 function draw(){const v=ms();$('display').textContent=decimal(v);$('normal').textContent=normal(v);if(running)frame=requestAnimationFrame(draw)}
@@ -59,7 +59,7 @@ function render(){const body=$('rows');body.replaceChildren();for(const e of eve
 function toggle(){if(running){elapsed=ms();running=false;cancelAnimationFrame(frame);add('停止');$('toggle').querySelector('.btn-label').textContent='再開';$('lap').disabled=true;draw()}else{started=mono();startedWall=Date.now();running=true;add(elapsed===0&&events.length===0?'開始':'再開');$('toggle').querySelector('.btn-label').textContent='停止';$('lap').disabled=false;draw()}save()}
 function lap(){if(running)add('ラップ')}
 function reset(){if(!confirm('計測時間と保存されたラップ記録をすべて消去しますか？'))return;running=false;cancelAnimationFrame(frame);elapsed=0;lapNo=0;lastLap=0;events=[];render();$('toggle').querySelector('.btn-label').textContent='スタート';$('lap').disabled=true;$('manual').hidden=true;$('copyStatus').textContent='';save();draw()}
-function rows(){return [['記録','デシマル（分）','分：秒','記録時刻','ラップ間（分）'],...events.map(e=>[e.kind,decimal(e.value),normal(e.value),e.at,Number.isFinite(e.split)?decimal(e.split):''])]}
+function rows(){return [['記録','デシマル（分）','分：秒.01','記録時刻','ラップ間（分）'],...events.map(e=>[e.kind,decimal(e.value),normal(e.value),e.at,Number.isFinite(e.split)?decimal(e.split):''])]}
 function csvCell(v){const s=String(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
 $('toggle').onclick=toggle;$('lap').onclick=lap;$('reset').onclick=reset;
 $('copy').onclick=async()=>{if(!events.length){$('copyStatus').textContent='記録がありません';return}const content=rows().map(r=>r.join('\t')).join('\n');try{if(!navigator.clipboard?.writeText)throw Error('unsupported');await navigator.clipboard.writeText(content);$('copyStatus').textContent='コピーしました';$('manual').hidden=true}catch(e){$('fallback').value=content;$('manual').hidden=false;$('fallback').focus();$('fallback').select();$('copyStatus').textContent='自動コピーできないため、下のテキストを選択してコピーしてください。'}};
