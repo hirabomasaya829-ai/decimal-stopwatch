@@ -57,11 +57,24 @@ body,button,input,textarea,select{font-family:system-ui,-apple-system,BlinkMacSy
 .record-table .group-header th{background:#f8fafc;color:#68798d;font-size:.73rem;font-weight:600;text-align:center;padding:7px 8px 3px;border-bottom:0}.record-table .group-header th:nth-child(3){border-left:1px solid #e0e6ee}.record-table thead tr:not(.group-header) th{font-size:.78rem;white-space:nowrap}.record-table td{font-size:.86rem}.column-settings>summary{font-size:.78rem;background:transparent;border:0;padding:4px 0;color:#62748b}.records h2{margin-bottom:5px}
 .record-table .group-header th{background:#edf2f8!important}.record-table .group-header th:nth-child(3){border-left:1px solid #e0e6ee}.record-table th:nth-child(6),.record-table td:nth-child(6),.record-table th:nth-child(7),.record-table td:nth-child(7){border-left:1px solid #e5eaf1}.record-table .group-header th:nth-child(4),.record-table .group-header th:nth-child(5){border-left:1px solid #e5eaf1}.column-tip{font-size:.75rem;color:#7b899b;margin:0 0 7px}.hidden-columns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:7px}.restore-column{background:#eaf1fa;color:#2c587f;border:1px solid #cbd9e9;padding:6px 10px;border-radius:8px;font-size:.78rem}.column-toggle{cursor:pointer}.column-toggle:hover{background:#dce7f4!important;color:#21476e!important}.column-toggle:focus-visible{outline:2px solid #2766bd;outline-offset:-2px}
 .record-table th:nth-child(2),.record-table td:nth-child(2){border-left:1px solid #e0e6ee;padding-left:10px}.record-table .group-header th:nth-child(2){border-left:1px solid #e0e6ee}.column-settings{margin:0 0 10px}.column-settings>summary{cursor:pointer;display:inline-block;border:1px solid #dce3ec;border-radius:8px;padding:7px 11px;background:#edf2f8;font-size:.85rem;color:#34445a}.column-options{display:flex;gap:8px 14px;flex-wrap:wrap;padding:12px 2px}.column-options label{display:flex;align-items:center;gap:5px;font-size:.82rem;white-space:nowrap}
+
+/* 列選択を常時表示するコンパクトなチップ式チェックボックス */
+.column-settings{margin:6px 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.column-settings-label{font-size:.76rem;color:#66778b;font-weight:600;white-space:nowrap}
+.column-options{display:flex;gap:6px;flex-wrap:wrap;padding:0}
+.column-options .column-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid #dce3ec;border-radius:999px;background:#f5f7fa;color:#657489;font-size:.78rem;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;user-select:none}
+.column-options .column-chip.is-active{background:#e7f0fd;border-color:#adc8eb;color:#245b9b}
+.column-options .column-chip:hover{border-color:#90b2da}
+.column-options .column-chip input{appearance:none;-webkit-appearance:none;width:14px;height:14px;flex:none;margin:0;border:1.5px solid #a4b2c3;border-radius:4px;background:#fff;display:grid;place-items:center;cursor:pointer}
+.column-options .column-chip input:checked{background:#2766bd;border-color:#2766bd}
+.column-options .column-chip input:checked::after{content:'✓';font-size:10px;font-weight:700;line-height:1;color:white}
+.column-options .column-chip:focus-within{outline:2px solid #6b9ed9;outline-offset:2px}
+@media(max-width:420px){.column-settings{gap:7px}.column-options .column-chip{padding:6px 9px}}
 </style></head><body><main>
 <header><h1>デシマルストップウォッチ</h1></header>
 <section class="panel"><div id="display" class="display" role="timer">0.00</div><div class="muted normal-line"><span id="secondaryLabel">通常時間</span> <span id="normal">00:00.00</span></div><button id="swapTime" type="button" aria-pressed="false">⇅ 表示を入れ替える</button><div class="clock time-line">現在時刻 <span id="clock">--:--:--</span></div></section>
 <div class="actions"><button id="toggle"><span class="btn-label">スタート</span><small>Space</small></button><button id="lap" disabled><span class="btn-label">ラップ</span><small>L</small></button><button id="reset">リセット</button></div>
-<section class="stats-section"><div class="stats"><div class="stat"><small>平均</small><strong id="avg">--</strong></div><div class="stat"><small>最短</small><strong id="min">--</strong></div><div class="stat"><small>最長</small><strong id="max">--</strong></div></div><p class="muted" id="lapCount">ラップ 0件</p></section><section><h2>ラップ・停止・再開の記録</h2><details class="column-settings"><summary>表示する列を選ぶ</summary><div id="columnOptions" class="column-options"></div></details><div class="tablewrap"><table class="record-table"><thead><tr class="group-header"><th></th><th colspan="2">デシマル（分）</th><th colspan="2">分：秒</th><th></th><th></th></tr><tr><th>記録</th><th title="累計デシマル（分）">累計</th><th title="ラップ差分（デシマル分）">ラップ</th><th title="累計時間（分：秒）">累計</th><th title="ラップ差分（分：秒）">ラップ</th><th>時刻</th><th>コメント</th></tr></thead><tbody id="rows"></tbody></table></div><div class="tools"><button id="copy">記録をコピー</button><button id="csv">CSVダウンロード</button></div><p id="copyStatus" role="status"></p><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
+<section class="stats-section"><div class="stats"><div class="stat"><small>平均</small><strong id="avg">--</strong></div><div class="stat"><small>最短</small><strong id="min">--</strong></div><div class="stat"><small>最長</small><strong id="max">--</strong></div></div><p class="muted" id="lapCount">ラップ 0件</p></section><section><h2>ラップ・停止・再開の記録</h2><div class="column-settings"><div class="column-settings-label">表示する列</div><div id="columnOptions" class="column-options"></div></div><div class="tablewrap"><table class="record-table"><thead><tr class="group-header"><th></th><th colspan="2">デシマル（分）</th><th colspan="2">分：秒</th><th></th><th></th></tr><tr><th>記録</th><th title="累計デシマル（分）">累計</th><th title="ラップ差分（デシマル分）">ラップ</th><th title="累計時間（分：秒）">累計</th><th title="ラップ差分（分：秒）">ラップ</th><th>時刻</th><th>コメント</th></tr></thead><tbody id="rows"></tbody></table></div><div class="tools"><button id="copy">記録をコピー</button><button id="csv">CSVダウンロード</button></div><p id="copyStatus" role="status"></p><div id="manual" hidden><p>コピー用テキスト（選択してコピー）</p><textarea id="fallback" rows="7" readonly></textarea></div></section>
 
 <section class="history-section"><h2>過去の記録 <small>（最大10回）</small></h2><div class="history-toolbar"><button id="allCsv">全記録CSVダウンロード</button></div><div id="history"></div></section></main><script>
 (()=>{'use strict';
@@ -69,11 +82,12 @@ const $=id=>document.getElementById(id);
 const KEY='decimal-stopwatch-state-v2';
 const HISTORY_KEY='decimal-stopwatch-history-v1';
 const COLUMNS_KEY='decimal-stopwatch-columns-v2';
+const DISPLAY_KEY='decimal-stopwatch-main-display-v1';
 const COLUMN_LABELS=['デシマル','分秒','時刻','コメント'];
 const COLUMN_GROUPS=[[1,2],[3,4],[5],[6]];
 let visibleGroups=[true,true,true,true];
 function applyColumns(){document.querySelectorAll('.record-table').forEach(table=>{table.querySelectorAll('tr').forEach(tr=>{Array.from(tr.children).forEach((cell,i)=>{const group=tr.classList.contains('group-header')?[-1,0,1,2,3][i]:COLUMN_GROUPS.findIndex(indices=>indices.includes(i));cell.hidden=group>=0&&!visibleGroups[group]})})})}
-function initColumns(){try{const stored=JSON.parse(localStorage.getItem(COLUMNS_KEY)||'null');if(Array.isArray(stored)&&stored.length===4)visibleGroups=stored.map(Boolean)}catch(e){}const options=$('columnOptions');COLUMN_LABELS.forEach((name,i)=>{const label=document.createElement('label');const input=document.createElement('input');input.type='checkbox';input.checked=visibleGroups[i];input.addEventListener('change',()=>{visibleGroups[i]=input.checked;try{localStorage.setItem(COLUMNS_KEY,JSON.stringify(visibleGroups))}catch(e){}applyColumns()});label.append(input,document.createTextNode(name));options.append(label)});applyColumns()}
+function initColumns(){try{const stored=JSON.parse(localStorage.getItem(COLUMNS_KEY)||'null');if(Array.isArray(stored)&&stored.length===4)visibleGroups=stored.map(Boolean)}catch(e){}const options=$('columnOptions');COLUMN_LABELS.forEach((name,i)=>{const label=document.createElement('label');label.className='column-chip';const input=document.createElement('input');input.type='checkbox';input.checked=visibleGroups[i];label.classList.toggle('is-active',input.checked);input.addEventListener('change',()=>{visibleGroups[i]=input.checked;label.classList.toggle('is-active',input.checked);try{localStorage.setItem(COLUMNS_KEY,JSON.stringify(visibleGroups))}catch(e){}applyColumns()});label.append(input,document.createTextNode(name));options.append(label)});applyColumns()}
 let history=[],normalPrimary=false;
 let elapsed=0,started=0,startedWall=0,running=false,frame=0,lapNo=0,events=[],lastLap=0;
 
@@ -86,7 +100,8 @@ function saveHistory(){try{localStorage.setItem(HISTORY_KEY,JSON.stringify(histo
 function save(){try{localStorage.setItem(KEY,JSON.stringify({elapsed:ms(),savedAt:Date.now(),running,lapNo,events,lastLap}))}catch(e){console.warn(e)}}
 function restore(){try{const old=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');history=Array.isArray(old)?old.slice(0,10):[]}catch(e){history=[]}try{const raw=localStorage.getItem(KEY);if(!raw)return;const s=JSON.parse(raw);if(!s||!Array.isArray(s.events))return;elapsed=Math.max(0,Number(s.elapsed)||0);lapNo=Math.max(0,Number(s.lapNo)||0);events=s.events.filter(e=>e&&typeof e.kind==='string'&&Number.isFinite(e.value)).slice(0,5000);lastLap=Math.max(0,Number(s.lastLap)||0);if(s.running){elapsed+=Math.max(0,Date.now()-(Number(s.savedAt)||Date.now()));started=mono();startedWall=Date.now();running=true;$('toggle').querySelector('.btn-label').textContent='停止';$('lap').disabled=false;}else if(elapsed||events.length){$('toggle').querySelector('.btn-label').textContent='再開';}}catch(e){console.warn(e)}}
 function draw(){const v=ms();$('display').textContent=normalPrimary?normal(v):decimal(v);$('normal').textContent=normalPrimary?decimal(v):normal(v);if(running)frame=requestAnimationFrame(draw)}
-function swapTime(){normalPrimary=!normalPrimary;$('secondaryLabel').textContent=normalPrimary?'デシマル（分）':'通常時間';$('swapTime').setAttribute('aria-pressed',String(normalPrimary));draw()}
+function applyDisplayMode(){ $('secondaryLabel').textContent=normalPrimary?'デシマル（分）':'通常時間';$('swapTime').setAttribute('aria-pressed',String(normalPrimary));draw() }
+function swapTime(){normalPrimary=!normalPrimary;try{localStorage.setItem(DISPLAY_KEY,normalPrimary?'normal':'decimal')}catch(e){}applyDisplayMode()}
 function add(kind){const v=ms(),at=clock();if(kind==='ラップ')lapNo++;const e={kind:kind==='ラップ'?'ラップ '+lapNo:kind,value:v,at};if(kind==='ラップ'){e.split=Math.max(0,v-lastLap);lastLap=v}events.unshift(e);render();save()}
 function lapDecimal(e){return e.kind.startsWith('ラップ ')&&Number.isFinite(e.split)?decimal(e.split):'—'}
 function lapDifference(e){return e.kind.startsWith('ラップ ')&&Number.isFinite(e.split)?normal(e.split):'—'}
@@ -108,6 +123,6 @@ document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.metaKey||e.alt
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){cancelAnimationFrame(frame);draw()}save()});
 window.addEventListener('pagehide',save);
 setInterval(()=>{$('clock').textContent=clock();if(running)save()},1000);
-restore();initColumns();render();renderHistory();$('clock').textContent=clock();draw();
+try{normalPrimary=localStorage.getItem(DISPLAY_KEY)==='normal'}catch(e){}restore();initColumns();render();renderHistory();$('clock').textContent=clock();applyDisplayMode();
 })();
 </script></body></html>
