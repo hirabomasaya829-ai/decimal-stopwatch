@@ -38,7 +38,9 @@ kbd{background:#e5edf8}
 th:last-child,td:last-child{min-width:170px}
 .comment-input{display:block;width:100%;min-width:140px;padding:7px 9px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;color:#172337;font:inherit;font-size:.88rem}
 .comment-input:focus{outline:2px solid #6c9be1;outline-offset:1px}
-.normal-line{display:flex;justify-content:center;align-items:baseline;gap:.45em;white-space:nowrap}.normal-line #normal{display:inline-block;min-width:8ch;text-align:left;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.normal-line{display:flex;justify-content:center;align-items:baseline;gap:.45em;white-space:nowrap}.normal-line #normal{display:inline-block;min-width:8ch;text-align:left;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;font-family:inherit}
+body,button,input,textarea,select{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif}
+#normal,.display,table,.stat strong{font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1}
 </style></head><body><main>
 <header><h1>デシマルストップウォッチ</h1></header>
 <section class="panel"><div class="muted">DECIMAL MINUTES</div><div id="display" class="display" role="timer">0.00</div><div class="muted normal-line">通常時間 <span id="normal">00:00.00</span></div><div class="clock">現在時刻 <span id="clock">--:--:--</span></div></section>
