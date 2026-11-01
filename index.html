@@ -2,9 +2,16 @@
 <html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="google-site-verification" content="5UUhQq7dEM7AN2DO1BQUM1RI3_KKcZVU2h5L40esHvM">
-<meta name="description" content="無料のデシマルストップウォッチ。経過時間を10進数の分と通常の分秒で同時表示。ラップ・停止・再開時刻を記録し、履歴をコピーできます。">
+<meta name="description" content="無料のデシマルストップウォッチ。100進法の小数の分（デシマル時間）と通常の分秒を同時表示。作業時間の計測、ラップタイム記録、履歴保存、CSV出力に対応。インストール不要でスマホ・PCから使えます。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="デシマルストップウォッチ｜小数の分で作業時間を計測">
+<meta property="og:description" content="デシマル時間と通常の分秒を同時表示。無料でラップ記録・履歴保存・CSV出力ができるストップウォッチ。">
+<meta property="og:url" content="https://decimal-stopwatch.jp-tools.workers.dev/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"デシマルストップウォッチ","url":"https://decimal-stopwatch.jp-tools.workers.dev/","description":"経過時間を小数の分と通常の分秒で表示し、作業時間やラップタイムを記録する無料のWebストップウォッチ。","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}</script>
 <meta name="robots" content="index,follow"><link rel="canonical" href="https://decimal-stopwatch.jp-tools.workers.dev/">
-<meta name="theme-color" content="#f6f8fb"><title>デシマルストップウォッチ｜無料・ラップ記録・時刻表示対応</title>
+<meta name="theme-color" content="#f6f8fb"><title>デシマルストップウォッチ｜100進法・小数の分で作業時間を無料計測</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#101827;color:#f4f7fb;font-family:system-ui,sans-serif}main{max-width:680px;margin:auto;padding:22px}header,.panel{text-align:center}.panel{background:#182336;border:1px solid #344154;border-radius:20px;padding:25px 12px;margin:22px 0}.display{font-size:clamp(4rem,16vw,7rem);font-weight:700;font-variant-numeric:tabular-nums}.muted{color:#b8c3d1}.clock{font-size:.85rem;margin-top:10px;color:#a8b4c6}.actions{display:flex;gap:8px}.actions button{flex:1}button{border:0;border-radius:12px;padding:16px 6px;font-weight:bold;cursor:pointer}#toggle{background:#42d69c}#lap{background:#4778b8;color:white}#reset{background:#2d3b50;color:white}button:disabled{opacity:.45}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;white-space:nowrap}td,th{padding:9px;border-bottom:1px solid #344154;text-align:left}section{margin-top:24px}.info{line-height:1.8;color:#b8c3d1}h1{font-size:1.6rem}h2{font-size:1.15rem}#copy{background:#405d82;color:white;margin:12px 0}textarea{width:100%;background:#182336;color:white;padding:12px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:#182336;border:1px solid #344154;border-radius:12px;padding:12px 5px;text-align:center}.stat strong{display:block;font-variant-numeric:tabular-nums;font-size:1.2rem}.stat small{color:#b8c3d1}.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tools button{padding:12px}#csv{background:#2d3b50;color:white}kbd{background:#28364a;border-radius:4px;padding:1px 5px}@media(max-width:420px){.stat strong{font-size:1rem}}
